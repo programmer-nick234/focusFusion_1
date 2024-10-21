@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Pomodoro Timer</title>
+    <style>
+        body {
+            background-image: url("pomodoro\ bg-img.webp");
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            color: white;
+        }
+        .timer-circle {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        .timer-circle svg {
+            transform: rotate(-90deg);
+        }
+        .timer-circle circle {
+            fill: none;
+            stroke-width: 10;
+        }
+        .timer-background {
+            stroke: #e0e0e0;
+        }
+        .timer-progress {
+            stroke: #4CAF50;
+            transition: stroke-dashoffset 0.5s;
+        }
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        #timer {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        #mode {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        button {
+            font-size: 1rem;
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background-color: #89b289;
+            color: #23b453;
+            text-shadow:
+                0 0 7px #4bba4e,
+                0 0 10px #62c267,
+                0 0 21px #5dae59,
+                0 0 42px rgb(67, 188, 87),
+                0 0 82px rgb(41, 196, 77),
+                0 0 92px #0fa,
+                0 0 102px rgb(59, 224, 84),
+                0 0 151px #0fa;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pomodoro Timer</h1>
+        <div class="timer-circle">
+            <svg width="300" height="300">
+                <circle class="timer-background" cx="150" cy="150" r="140"></circle>
+                <circle class="timer-progress" cx="150" cy="150" r="140"></circle>
+            </svg>
+            <div class="timer-text">
+                <div id="mode">Work Time</div>
+                <div id="timer">25:00</div>
+            </div>
+        </div>
+        <div>
+            <button id="start">Start</button>
+            <button id="pause">Pause</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const timer = document.getElementById('timer');
+        const modeDisplay = document.getElementById('mode');
+        const startButton = document.getElementById('start');
+        const pauseButton = document.getElementById('pause');
+        const resetButton = document.getElementById('reset');
+        const progressCircle = document.querySelector('.timer-progress');
+
+        const FULL_DASH_ARRAY = 2 * Math.PI * 140;
+        let workTime = 25 * 60;
+        let breakTime = 5 * 60;
+        let timeLeft = workTime;
+        let isRunning = false;
+        let isWorkMode = true;
+        let intervalId;
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const timeTotal = isWorkMode ? workTime : breakTime;
+            const dashOffset = FULL_DASH_ARRAY * (1 - timeLeft / timeTotal);
+            progressCircle.style.strokeDasharray = FULL_DASH_ARRAY;
+            progressCircle.style.strokeDashoffset = dashOffset;
+        }
+
+        function switchMode() {
+            isWorkMode = !isWorkMode;
+            timeLeft = isWorkMode ? workTime : breakTime;
+            modeDisplay.textContent = isWorkMode ? 'Work Time' : 'Break Time';
+            progressCircle.style.stroke = isWorkMode ? '#4CAF50' : '#FFA500';
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                intervalId = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(intervalId);
+                        switchMode();
+                        startTimer();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(intervalId);
+            isRunning = false;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            isWorkMode = true;
+            timeLeft = workTime;
+            modeDisplay.textContent = 'Work Time';
+            progressCircle.style.stroke = '#4CAF50';
+            updateDisplay();
+        }
+
+        startButton.addEventListener('click', startTimer);
+        pauseButton.addEventListener('click', pauseTimer);
+        resetButton.addEventListener('click', resetTimer);
+
+        updateDisplay();
+    </script>
+</body>
+</html>

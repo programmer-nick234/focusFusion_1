@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue Theme To-Do List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body style="background-image: url(/to-dolist\ bg-img.webp);"
+  <div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold text-white  mb-4">My To-Do List</h1>
+
+    <div class="mb-4">
+      <nav class="flex space-x-4">
+        <button id="dailyBtn" class="bg-blue-500 text-white px-3 py-2 rounded-md">Daily</button>
+        <button id="weeklyBtn" class="bg-blue-300 hover:bg-blue-400 text-gray-800 px-3 py-2 rounded-md">Weekly</button>
+        <button id="monthlyBtn" class="bg-blue-300 hover:bg-blue-400 text-gray-800 px-3 py-2 rounded-md">Monthly</button>
+      </nav>
+    </div>
+
+    <div id="dailyTasks" class="bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-bold text-blue-700 mb-2">Daily Tasks</h2>
+      <ul class="space-y-3" id="dailyTaskList">
+        </ul>
+
+      <div class="mt-4">
+        <input type="text" id="newTaskInput"
+          class="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Add a new task...">
+        <button id="addTaskBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
+          Add Task
+        </button>
+      </div>
+    </div>
+
+    <div id="weeklyTasks" class="hidden bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-bold text-blue-700 mb-2">Weekly Report</h2>
+      <p>No weekly tasks completed yet.</p>
+    </div>
+
+    <div id="monthlyTasks" class="hidden bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-bold text-blue-700 mb-2">Monthly Report</h2>
+      <p>No monthly tasks completed yet.</p>
+    </div>
+  </div>
+
+  <script>
+    const newTaskInput = document.getElementById('newTaskInput');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const dailyTaskList = document.getElementById('dailyTaskList');
+    const dailyBtn = document.getElementById('dailyBtn');
+    const weeklyBtn = document.getElementById('weeklyBtn');
+    const monthlyBtn = document.getElementById('monthlyBtn');
+    const dailyTasksDiv = document.getElementById('dailyTasks');
+    const weeklyTasksDiv = document.getElementById('weeklyTasks');
+    const monthlyTasksDiv = document.getElementById('monthlyTasks');
+
+    addTaskBtn.addEventListener('click', () => {
+      const newTaskText = newTaskInput.value.trim();
+      if (newTaskText !== "") {
+        const newTaskItem = document.createElement('li');
+        newTaskItem.classList.add('flex', 'items-center');
+        newTaskItem.innerHTML = `
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-500 rounded">
+                    <span class="ml-2">${newTaskText}</span>
+                    <button class="delete-btn ml-auto bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm">Delete</button>
+                `;
+        dailyTaskList.appendChild(newTaskItem);
+        newTaskInput.value = "";
+
+        // Add event listener to delete button
+        const deleteBtn = newTaskItem.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', () => {
+          dailyTaskList.removeChild(newTaskItem);
+        });
+      }
+    });
+
+    dailyBtn.addEventListener('click', () => {
+      dailyTasksDiv.classList.remove('hidden');
+      weeklyTasksDiv.classList.add('hidden');
+      monthlyTasksDiv.classList.add('hidden');
+      dailyBtn.classList.add('bg-blue-500', 'text-white');
+      dailyBtn.classList.remove('bg-blue-300', 'text-gray-800');
+      weeklyBtn.classList.remove('bg-blue-500', 'text-white');
+      weeklyBtn.classList.add('bg-blue-300', 'text-gray-800');
+      monthlyBtn.classList.remove('bg-blue-500', 'text-white');
+      monthlyBtn.classList.add('bg-blue-300', 'text-gray-800');
+    });
+
+    weeklyBtn.addEventListener('click', () => {
+      dailyTasksDiv.classList.add('hidden');
+      weeklyTasksDiv.classList.remove('hidden');
+      monthlyTasksDiv.classList.add('hidden');
+      weeklyBtn.classList.add('bg-blue-500', 'text-white');
+      weeklyBtn.classList.remove('bg-blue-300', 'text-gray-800');
+      dailyBtn.classList.remove('bg-blue-500', 'text-white');
+      dailyBtn.classList.add('bg-blue-300', 'text-gray-800');
+      monthlyBtn.classList.remove('bg-blue-500', 'text-white');
+      monthlyBtn.classList.add('bg-blue-300', 'text-gray-800');
+    });
+
+    monthlyBtn.addEventListener('click', () => {
+      dailyTasksDiv.classList.add('hidden');
+      weeklyTasksDiv.classList.add('hidden');
+      monthlyTasksDiv.classList.remove('hidden');
+      monthlyBtn.classList.add('bg-blue-500', 'text-white');
+      monthlyBtn.classList.remove('bg-blue-300', 'text-gray-800');
+      dailyBtn.classList.remove('bg-blue-500', 'text-white');
+      dailyBtn.classList.add('bg-blue-300', 'text-gray-800');
+      weeklyBtn.classList.remove('bg-blue-500', 'text-white');
+      weeklyBtn.classList.add('bg-blue-300', 'text-gray-800');
+    });
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</body>
+
+</html>
+
